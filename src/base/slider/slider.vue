@@ -1,14 +1,125 @@
 <template>
-  <div class="slider">
-    <div class="slider-group">
-      <slot></slot>
+  <div class="slider" ref="slider">
+    <div class="slider-group" ref="sliderGroup">
+      <slot>
+        <!-- 轮播图 -->
+      </slot>
     </div>
-    <div class="dots"></div>
+    <div class="dots">
+      <span
+         class="dot"
+         v-for="(item,index) in dots"
+         :key="index"
+         :class="{active:currentPageIndex === index}">
+         </span>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-export default {}
+import BScroll from 'better-scroll'
+import { addClass } from 'common/js/dom'
+export default {
+  name: 'slider',
+  data () {
+    return {
+      dots: [],
+      currentPageIndex: 0
+    }
+  },
+  props: {
+    // 是否循环轮播
+    loop: {
+      type: Boolean,
+      default: true
+    },
+    // 是否自动播放
+    autoPlay: {
+      type: Boolean,
+      default: true
+    },
+    // 轮播间隔时间
+    interval: {
+      type: Number,
+      default: 4000
+    }
+  },
+  mounted () {
+    setTimeout(() => {
+      this._setSliderWidth()
+      this._initDots()
+      this._initlider()
+      if (this.autoPlay) {
+        this._play()
+      }
+    }, 20)
+
+    window.addEventListener('resize', () => {
+      if (!this.slider) {
+        return
+      }
+      this._setSliderWidth(true)
+      this.slider.refresh()
+    })
+  },
+  methods: {
+    _setSliderWidth (isResize) {
+      this.children = this.$refs.sliderGroup.children
+      let width = 0
+      let sliderWidth = this.$refs.slider.clientWidth
+      for (let i = 0; i < this.children.length; i++) {
+        let child = this.children[i]
+        addClass(child, 'slider-item')
+        // 设置宽度
+        child.style.width = sliderWidth + 'px'
+        // 轮播总宽度（实例中是5，就是5倍大小）
+        width += sliderWidth
+      }
+      if (this.loop && !isResize) {
+        // 如果是循环播放，在首尾各多一个，所以是本例中是（5+2）倍大小
+        width += 2 * sliderWidth
+      }
+      // 设置轮播总宽度
+      this.$refs.sliderGroup.style.width = width + 'px'
+    },
+    _initDots () {
+      this.dots = new Array(this.children.length)
+    },
+    _initlider () {
+      this.slider = new BScroll(this.$refs.slider, {
+        // 横向滚动
+        scrollX: true,
+        scrollY: false,
+        momentum: false,
+        snap: true,
+        snapLoop: this.loop,
+        snapThreshold: 0.3,
+        snapSpeed: 400
+      })
+      this.slider.on('scrollEnd', () => {
+        let pageIndex = this.slider.getCurrentPage().pageX
+        if (this.loop) {
+          pageIndex -= 1
+        }
+        this.currentPageIndex = pageIndex
+
+        if (this.autoPlay) {
+          clearTimeout(this.timer)
+          this._play()
+        }
+      })
+    },
+    _play () {
+      let pageIndex = this.currentPageIndex + 1
+      if (this.loop) {
+        pageIndex += 1
+      }
+      this.timer = setTimeout(() => {
+        this.slider.goToPage(pageIndex, 0, 400)
+      }, this.interval)
+    }
+  }
+}
 </script>
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
@@ -37,7 +148,7 @@ export default {}
       position: absolute
       right: 0
       left: 0
-      bottom: 12px
+      top: 130px
       text-align: center
       font-size: 0
       .dot

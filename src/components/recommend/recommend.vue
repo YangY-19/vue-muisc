@@ -1,11 +1,55 @@
 <template>
   <div>
-   recommend
+    <div class="recommend">
+      <div class="recommend-content">
+        <div v-if="recommend.length"  class="slider-srapper">
+          <!-- 引用base/slider/slider下的轮播图组件 -->
+             <slider>
+               <div v-for="item in recommend" :key="item.id">
+                  <a :href="item.linkUrl">
+                    <img :src="item.picUrl">
+                  </a>
+               </div>
+             </slider>
+            <!-- 引用base/slider/slider下的轮播图组件 -->
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单排行榜</h1>
+          <ul>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-export default {}
+import Slider from 'base/slider/slider'
+import { getRecommend } from 'api/recommend'
+import { ERR_OK } from 'api/config'
+export default {
+  name: 'Recommend',
+  data () {
+    return {
+      recommend: []
+    }
+  },
+  components: {
+    Slider
+  },
+  created () {
+    this._getRecommend()
+  },
+  methods: {
+    _getRecommend () {
+      getRecommend().then((res) => {
+        if (res.code === ERR_OK) {
+          this.recommend = res.data.slider
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
