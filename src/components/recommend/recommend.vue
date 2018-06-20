@@ -1,44 +1,60 @@
 <template>
-  <div>
     <div class="recommend">
-      <div class="recommend-content">
-        <div v-if="recommend.length"  class="slider-srapper">
-          <!-- 引用base/slider/slider下的轮播图组件 -->
-             <slider>
-               <div v-for="item in recommend" :key="item.id">
-                  <a :href="item.linkUrl">
-                    <img :src="item.picUrl">
-                  </a>
-               </div>
-             </slider>
-            <!-- 引用base/slider/slider下的轮播图组件 -->
-        </div>
-        <div class="recommend-list">
-          <h1 class="list-title">热门歌单排行榜</h1>
-          <ul>
-          </ul>
-        </div>
+      <scroll class="recommend-content" :data="discList">
+        <div >
+            <div v-if="recommend.length"  class="slider-srapper">
+              <!-- 引用base/slider/slider下的轮播图组件 -->
+                <slider>
+                  <div v-for="item in recommend" :key="item.id">
+                      <a :href="item.linkUrl">
+                        <img class="nedsclick" :src="item.picUrl">
+                      </a>
+                  </div>
+                </slider>
+                <!-- 引用base/slider/slider下的轮播图组件 -->
+            </div>
+            <div class="recommend-list">
+              <h1 class="list-title">热门歌单排行榜</h1>
+              <ul>
+                <li
+                  v-for="item in discList"
+                  :key="item.dissid"
+                  class="item">
+                  <div class="icon">
+                    <img v-lazy="item.imgurl" width="60" height="60">
+                  </div>
+                  <div class="text">
+                    <h2 class="name" v-html="item.creator.name"></h2>
+                    <p class="desc" v-html="item.dissname"></p>
+                  </div>
+                </li>
+              </ul>
+            </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import Slider from 'base/slider/slider'
-import { getRecommend } from 'api/recommend'
+import Scroll from 'base/scroll/scroll'
+import { getRecommend, getDiscList } from 'api/recommend'
 import { ERR_OK } from 'api/config'
 export default {
   name: 'Recommend',
   data () {
     return {
-      recommend: []
+      recommend: [],
+      discList: []
     }
   },
   components: {
-    Slider
+    Slider,
+    Scroll
   },
   created () {
     this._getRecommend()
+    this._getDiscList()
   },
   methods: {
     _getRecommend () {
@@ -47,7 +63,20 @@ export default {
           this.recommend = res.data.slider
         }
       })
+    },
+    _getDiscList () {
+      getDiscList().then((res) => {
+        if (res.code === ERR_OK) {
+          this.discList = res.data.list
+        }
+      })
     }
+    // loadImage () {
+    //   if (!this.chekLoaded) {
+    //     this.$refs.scroll.refresh()
+    //     this.chekLoaded = true
+    //   }
+    // }
   }
 }
 </script>
@@ -78,7 +107,9 @@ export default {
           display: flex
           box-sizing: border-box
           align-items: center
-          padding: 0 20px 20px 20px
+          padding: 15px 30px 10px 20px
+          background: #333
+          margin-bottom: 2px
           .icon
             flex: 0 0 60px
             width: 60px
