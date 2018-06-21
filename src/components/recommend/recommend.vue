@@ -1,13 +1,13 @@
 <template>
     <div class="recommend">
-      <scroll class="recommend-content" :data="discList">
+      <scroll ref="scroll" class="recommend-content" :data="discList">
         <div >
             <div v-if="recommend.length"  class="slider-srapper">
               <!-- 引用base/slider/slider下的轮播图组件 -->
                 <slider>
                   <div v-for="item in recommend" :key="item.id">
                       <a :href="item.linkUrl">
-                        <img class="nedsclick" :src="item.picUrl">
+                        <img @load="loadImage" class="nedsclick" :src="item.picUrl">
                       </a>
                   </div>
                 </slider>
@@ -31,6 +31,11 @@
               </ul>
             </div>
       </div>
+      <div class="loading-container" v-show="hasDiscList">
+        <loading>
+
+        </loading>
+      </div>
     </scroll>
   </div>
 </template>
@@ -38,6 +43,7 @@
 <script type="text/ecmascript-6">
 import Slider from 'base/slider/slider'
 import Scroll from 'base/scroll/scroll'
+import Loading from 'base/loading/loading'
 import { getRecommend, getDiscList } from 'api/recommend'
 import { ERR_OK } from 'api/config'
 export default {
@@ -48,9 +54,15 @@ export default {
       discList: []
     }
   },
+  computed: {
+    hasDiscList () {
+      return !this.discList.length
+    }
+  },
   components: {
     Slider,
-    Scroll
+    Scroll,
+    Loading
   },
   created () {
     this._getRecommend()
@@ -70,13 +82,13 @@ export default {
           this.discList = res.data.list
         }
       })
+    },
+    loadImage () {
+      if (!this.chekLoaded) {
+        this.$refs.scroll.refresh()
+        this.chekLoaded = true
+      }
     }
-    // loadImage () {
-    //   if (!this.chekLoaded) {
-    //     this.$refs.scroll.refresh()
-    //     this.chekLoaded = true
-    //   }
-    // }
   }
 }
 </script>
