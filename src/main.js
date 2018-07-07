@@ -1,6 +1,7 @@
 import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
+import store from './store'
 import router from './router'
 import fastclik from 'fastclick'
 // 图片懒加载
@@ -20,5 +21,6 @@ Vue.use(VueLazyload, {
 new Vue({
   el: '#app',
   router,
-  render: h => h(App)
+  render: h => h(App),
+  store
 })
