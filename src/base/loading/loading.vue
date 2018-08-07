@@ -18,6 +18,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import "~common/stylus/variable"
+@import "~common/stylus/mixin"
   .loading
     width: 100%
     text-align: center
@@ -25,4 +26,5 @@ export default {
       line-height: 20px
       font-size: $font-size-small
       color: $color-text-l
+      fanily()
 </style>

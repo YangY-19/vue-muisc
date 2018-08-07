@@ -21,6 +21,7 @@ export default {}
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
 @import "~common/stylus/variable"
+@import "~common/stylus/mixin"
 
    .tab
       display: flex
@@ -33,6 +34,7 @@ export default {}
          .tab-link
             padding-bottom: 5px
             color: $color-text-l
+            family()
          &.router-link-active
            .tab-link
              color: $color-theme

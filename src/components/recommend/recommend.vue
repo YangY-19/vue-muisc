@@ -1,5 +1,5 @@
 <template>
-    <div class="recommend">
+    <div class="recommend" ref="recommend">
       <scroll ref="scroll" class="recommend-content" :data="discList">
         <div >
             <div v-if="recommend.length"  class="slider-srapper">
@@ -46,7 +46,10 @@ import Scroll from 'base/scroll/scroll'
 import Loading from 'base/loading/loading'
 import { getRecommend, getDiscList } from 'api/recommend'
 import { ERR_OK } from 'api/config'
+import {playlistMixin} from 'common/js/mixin'
+
 export default {
+  mixins: [playlistMixin],
   name: 'Recommend',
   data () {
     return {
@@ -69,6 +72,11 @@ export default {
     this._getDiscList()
   },
   methods: {
+    handlePlaylist(playlist) {
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.recommend.style.bottom = bottom
+      this.$refs.scroll.refresh()
+    },
     _getRecommend () {
       getRecommend().then((res) => {
         if (res.code === ERR_OK) {
@@ -95,6 +103,7 @@ export default {
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .recommend
     position: fixed
@@ -115,6 +124,7 @@ export default {
           text-align: center
           font-size: $font-size-medium
           color: $color-theme
+          family()
         .item
           display: flex
           box-sizing: border-box
@@ -137,8 +147,10 @@ export default {
             .name
               margin-bottom: 10px
               color: $color-text
+              family()
             .desc
               color: $color-text-d
+              family()
       .loading-container
         position: absolute
         width: 100%

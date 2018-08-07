@@ -21,6 +21,7 @@ export default {
       text-align: center
       color: $color-theme
       font-size: 0
+      @import "~common/stylus/mixin"
       .icon
         display: inline-block
         vertical-align: top

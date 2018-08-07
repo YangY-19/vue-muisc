@@ -12,23 +12,22 @@
 </template>
 
 <script type="text/ecmascript-6">
-  export default {
-    props: {
-      songs: {
-        type: Array,
-        default: []
-      }
+export default {
+  props: {
+    songs: {
+      type: Array,
+      default: []
+    }
+  },
+  methods: {
+    getDesc(song) {
+      return `${song.singer} · ${song.album}`
     },
-    methods: {
-      getDesc(song) {
-        return `${song.singer} · ${song.album}`
-        console.log(this.songs)
-      },
-      selectItem(item, index) {
-        this.$emit('select', item, index)
-      }
+    selectItem(item, index) {
+      this.$emit('select', item, index)
     }
   }
+}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
@@ -42,6 +41,7 @@
       box-sizing: border-box
       height: 64px
       font-size: $font-size-medium
+      family()
       /* .rank
         flex: 0 0 25px
         width: 25px
@@ -68,8 +68,10 @@
         .name
           no-wrap()
           color: $color-text
+          fanily()
         .desc
           no-wrap()
           margin-top: 4px
           color: $color-text-d
+          family()
 </style>

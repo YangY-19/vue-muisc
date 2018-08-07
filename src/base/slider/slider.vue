@@ -127,6 +127,7 @@ export default {
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .slider
     min-height: 1px
@@ -154,6 +155,7 @@ export default {
       top: 130px
       text-align: center
       font-size: 0
+      family()
       .dot
         display: inline-block
         margin: 0 4px

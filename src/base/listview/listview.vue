@@ -107,6 +107,9 @@ export default {
     scroll (pos) {
       this.scrollY = pos.y
     },
+    refresh() {
+      this.$refs.listview.refresh()
+    },
     _calculateHeight () {
       this.listHeight = []
       const list = this.$refs.listGroup
@@ -121,14 +124,14 @@ export default {
     _scrollTo(index) {
       if (!index && index !== 0) {
         return
-        if (index < 0) {
-          index = 0
-        } else if (index > this.listHeight.length - 2) {
-          index = this.listHeight.length - 2
-        }
-        this.scrollY = -this.listHeight[index]
-        this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 100)
       }
+      if (index < 0) {
+        index = 0
+      } else if (index > this.listHeight.length - 2) {
+        index = this.listHeight.length - 2
+      }
+      this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+      this.scrollY = this.$refs.listview.scroll.y
     }
   },
   watch: {
@@ -172,6 +175,7 @@ export default {
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
    @import "~common/stylus/variable"
+   @import "~common/stylus/mixin"
    .listview
     position: relative
     width: 100%
@@ -199,6 +203,7 @@ export default {
           margin-left: 20px
           color: $color-text-l
           font-size: $font-size-medium
+          family()
     .list-shortcut
       position: absolute
       z-index: 30
